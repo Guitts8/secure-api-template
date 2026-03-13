@@ -3,7 +3,6 @@ import { hashPassword, comparePassword } from "../utils/hash";
 import { generateToken } from "../utils/jwt";
 
 export async function register(name: string, email: string, password: string) {
-
   const userExists = await prisma.user.findUnique({
     where: { email }
   });
@@ -22,11 +21,16 @@ export async function register(name: string, email: string, password: string) {
     }
   });
 
-  return user;
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    createdAt: user.createdAt
+  };
 }
 
 export async function login(email: string, password: string) {
-
   const user = await prisma.user.findUnique({
     where: { email }
   });
@@ -45,6 +49,11 @@ export async function login(email: string, password: string) {
 
   return {
     token,
-    user
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role
+    }
   };
 }
