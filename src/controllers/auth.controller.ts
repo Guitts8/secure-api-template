@@ -96,3 +96,23 @@ export const refresh: RequestHandler = async (req, res) => {
     });
   }
 };
+export const logout: RequestHandler = async (req, res) => {
+  try {
+    const { refreshToken } = req.body as { refreshToken?: string };
+
+    if (!refreshToken) {
+      res.status(400).json({
+        error: "Refresh token required"
+      });
+      return;
+    }
+
+    const result = await AuthService.logout(refreshToken);
+
+    res.json(result);
+  } catch (error: any) {
+    res.status(400).json({
+      error: error.message
+    });
+  }
+};
