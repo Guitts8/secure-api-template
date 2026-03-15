@@ -70,3 +70,27 @@ export async function login(email: string, password: string) {
     }
   };
 }
+export async function logout(refreshToken: string) {
+  const storedToken = await prisma.refreshToken.findUnique({
+    where: { token: refreshToken }
+  });
+
+  if (!storedToken) {
+    throw new Error("Refresh token not found");
+  }
+
+  if (storedToken.revokedAt) {
+    throw new Error("Refresh token already revoked");
+  }
+
+  await prisma.refreshToken.update({
+    where: { token: refreshToken },
+    data: {
+      revokedAt: new Date()
+    }
+  });
+
+  return {
+    message: "Logout successful"
+  };
+}
