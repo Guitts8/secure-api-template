@@ -21,7 +21,12 @@ const options: swaggerJsdoc.Options = {
           bearerFormat: "JWT"
         }
       }
-    }
+    },
+    security: [
+      {
+        bearerAuth: []
+      }
+    ]
   },
   apis: ["./src/routes/*.ts"]
 };

@@ -4,6 +4,22 @@ import { authorize } from "../middlewares/role.middleware";
 
 const router = Router();
 
+/**
+ * @swagger
+ * /admin/dashboard:
+ *   get:
+ *     summary: Access admin dashboard
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Admin dashboard accessed successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Access denied
+ */
 router.get(
   "/dashboard",
   authenticate,
