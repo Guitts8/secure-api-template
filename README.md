@@ -1,227 +1,257 @@
 # Secure API Template
 
-[![Node.js](https://img.shields.io/badge/node.js-18+-339933?logo=node.js\&logoColor=white)]()
-[![TypeScript](https://img.shields.io/badge/typescript-5+-3178C6?logo=typescript\&logoColor=white)]()
-[![Express](https://img.shields.io/badge/express-4.x-000000?logo=express\&logoColor=white)]()
-[![PostgreSQL](https://img.shields.io/badge/postgresql-14+-4169E1?logo=postgresql\&logoColor=white)]()
-[![Prisma](https://img.shields.io/badge/prisma-ORM-2D3748?logo=prisma\&logoColor=white)]()
-[![JWT](https://img.shields.io/badge/authentication-JWT-black)]()
-[![License](https://img.shields.io/badge/license-MIT-lightgrey)]()
+![Node](https://img.shields.io/badge/Node.js-18+-green)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
+![Express](https://img.shields.io/badge/Express-API-black)
+![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue)
+![JWT](https://img.shields.io/badge/Auth-JWT-orange)
 
-A production-ready authentication API built with **Node.js**, **TypeScript**, **Express**, **Prisma ORM**, and **PostgreSQL**.
+Secure API Template is a production-ready authentication API built with **Node.js, TypeScript, Express and Prisma**.
 
-This project demonstrates a secure backend architecture including authentication, role-based authorization, and a scalable modular structure suitable for real-world applications.
+The project demonstrates best practices for building secure REST APIs including authentication, authorization, refresh tokens and role-based access control.
 
----
-
-## Overview
-
-This repository provides a backend template focused on authentication and user management.
-It is designed to demonstrate modern backend practices such as:
-
-* secure password handling
-* JWT authentication
-* clean service architecture
-* database integration with Prisma ORM
-* modular and maintainable code organization
-
-The goal of this project is to serve both as a **learning resource** and as a **production-ready starting point** for secure APIs.
+This repository was created as part of a backend portfolio project to showcase modern API architecture.
 
 ---
 
-## Technology Stack
+## Features
 
-| Technology | Purpose                                    |
-| ---------- | ------------------------------------------ |
-| Node.js    | Runtime environment                        |
-| TypeScript | Static typing and improved maintainability |
-| Express    | HTTP server and routing                    |
-| PostgreSQL | Relational database                        |
-| Prisma ORM | Database access layer                      |
-| JWT        | Authentication mechanism                   |
-| bcrypt     | Password hashing                           |
-| dotenv     | Environment variable management            |
+- User registration
+- User login
+- JWT authentication
+- Refresh token flow
+- Logout with token revocation
+- Role-based authorization (Admin / User)
+- Protected routes
+- Prisma ORM
+- PostgreSQL database
+- Swagger API documentation
+
+---
+
+## Tech Stack
+
+### Backend
+
+- Node.js
+- Express
+- TypeScript
+
+### Database
+
+- PostgreSQL
+- Prisma ORM
+
+### Authentication
+
+- JSON Web Token (JWT)
+- Refresh Tokens
+
+### Documentation
+
+- Swagger UI
+- Swagger JSDoc
 
 ---
 
 ## Project Structure
 
-```text
-secure-api-template
-│
-├── prisma
-│   └── schema.prisma
-│
-├── src
-│   ├── config
-│   │   └── prisma.ts
-│   │
-│   ├── controllers
-│   │   └── auth.controller.ts
-│   │
-│   ├── services
-│   │   └── auth.service.ts
-│   │
-│   ├── routes
-│   │   └── auth.routes.ts
-│   │
-│   ├── utils
-│   │   ├── hash.ts
-│   │   └── jwt.ts
-│   │
-│   ├── app.ts
-│   └── server.ts
-│
-├── .env
-├── package.json
-└── tsconfig.json
-```
+\```text
+src
+├── config
+│   ├── prisma.ts
+│   └── swagger.ts
+├── controllers
+│   └── auth.controller.ts
+├── middlewares
+│   ├── auth.middleware.ts
+│   └── role.middleware.ts
+├── repositories
+├── routes
+│   ├── auth.routes.ts
+│   ├── user.routes.ts
+│   └── admin.routes.ts
+├── services
+│   └── auth.service.ts
+├── utils
+│   ├── hash.ts
+│   └── jwt.ts
+├── app.ts
+└── server.ts
+\```
 
 ---
 
 ## Installation
 
-Clone the repository:
+Clone the repository
 
-```bash
-git clone https://github.com/YOUR_USERNAME/secure-api-template.git
+\```bash
+git clone https://github.com/your-username/secure-api-template.git
+\```
+
+Enter the project folder
+
+\```bash
 cd secure-api-template
-```
+\```
 
-Install dependencies:
+Install dependencies
 
-```bash
+\```bash
 npm install
-```
+\```
 
 ---
 
-## Environment Configuration
+## Environment Variables
 
 Create a `.env` file in the project root.
 
-Example configuration:
+Example:
 
-```env
+\```env
 DATABASE_URL="postgresql://postgres:password@localhost:5432/secure_api_template"
-JWT_SECRET="your_secret_key"
-JWT_REFRESH_SECRET="your_refresh_secret"
-PORT=3000
-```
+JWT_SECRET=supersecretkey
+JWT_REFRESH_SECRET=superrefreshsecret
+\```
 
 ---
 
 ## Database Setup
 
-Apply Prisma migrations:
+Run the Prisma migrations
 
-```bash
-npx prisma migrate dev --name init
-```
+\```bash
+npx prisma migrate dev
+\```
 
-Generate the Prisma Client:
+Generate the Prisma client
 
-```bash
+\```bash
 npx prisma generate
-```
+\```
 
-Optional: open Prisma Studio for database inspection.
+You can inspect the database with:
 
-```bash
+\```bash
 npx prisma studio
-```
+\```
 
 ---
 
-## Running the Application
+## Running the API
 
-Start the development server:
+Start the development server
 
-```bash
+\```bash
 npm run dev
-```
+\```
 
-The API will be available at:
+The API will run on:
 
-```
+\```text
 http://localhost:3000
-```
+\```
 
 ---
 
-## API Endpoints
+## API Documentation
 
-### Register
+Swagger documentation is available at:
 
-```
-POST /auth/register
-```
+\```text
+http://localhost:3000/docs
+\```
 
-Example request body:
+The documentation includes:
 
-```json
-{
-  "name": "John Doe",
-  "email": "john@email.com",
-  "password": "123456"
-}
-```
+- Authentication endpoints
+- Protected routes
+- Request and response schemas
+- Interactive API testing
 
 ---
 
-### Login
+## Authentication Flow
 
-```
+Login returns two tokens:
+
+\```text
+accessToken
+refreshToken
+\```
+
+Access tokens are short-lived and used to authenticate requests.
+
+Refresh tokens are stored in the database and can be used to generate new access tokens.
+
+---
+
+## Protected Routes
+
+Some routes require authentication.
+
+Example:
+
+\```http
+GET /users/me
+\```
+
+Admin-only routes require the `ADMIN` role.
+
+Example:
+
+\```http
+GET /admin/dashboard
+\```
+
+---
+
+## Example Login Request
+
+\```http
 POST /auth/login
-```
+\```
 
-Example request body:
+Request body
 
-```json
+\```json
 {
-  "email": "john@email.com",
+  "email": "user@email.com",
   "password": "123456"
 }
-```
+\```
 
-Example response:
+Response
 
-```json
+\```json
 {
-  "token": "JWT_TOKEN",
+  "accessToken": "...",
+  "refreshToken": "...",
   "user": {
-    "id": "uuid",
-    "name": "John Doe",
-    "email": "john@email.com",
+    "id": "...",
+    "name": "User",
+    "email": "user@email.com",
     "role": "USER"
   }
 }
-```
-
----
-
-## Authentication
-
-Protected endpoints require a JWT token in the request header:
-
-```
-Authorization: Bearer YOUR_TOKEN
-```
+\```
 
 ---
 
 ## Future Improvements
 
-* refresh token support
-* role-based authorization middleware
-* request validation
-* global error handling
-* API documentation with Swagger
-* containerization with Docker
-* automated testing
+- Input validation with Zod
+- Global error handling
+- Docker support
+- Unit and integration tests
+- Rate limiting
+- Logging
 
 ---
 
 ## License
 
-This project is licensed under the MIT License.
+MIT
