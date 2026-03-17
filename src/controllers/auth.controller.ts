@@ -3,17 +3,35 @@ import jwt from "jsonwebtoken";
 import { prisma } from "../config/prisma";
 import * as AuthService from "../services/auth.service";
 import { generateAccessToken } from "../utils/jwt";
+import {
+  registerSchema,
+  loginSchema,
+  refreshTokenSchema,
+  logoutSchema
+} from "../validators/auth.schema";
 
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET as string;
 
 export const register: RequestHandler = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const data = registerSchema.parse(req.body);
 
-    const user = await AuthService.register(name, email, password);
+    const user = await AuthService.register(
+      data.name,
+      data.email,
+      data.password
+    );
 
     res.status(201).json(user);
   } catch (error: any) {
+    if (error.name === "ZodError") {
+      res.status(400).json({
+        error: "Validation failed",
+        details: error.issues
+      });
+      return;
+    }
+
     res.status(400).json({
       error: error.message
     });
@@ -22,12 +40,23 @@ export const register: RequestHandler = async (req, res) => {
 
 export const login: RequestHandler = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const data = loginSchema.parse(req.body);
 
-    const result = await AuthService.login(email, password);
+    const result = await AuthService.login(
+      data.email,
+      data.password
+    );
 
     res.json(result);
   } catch (error: any) {
+    if (error.name === "ZodError") {
+      res.status(400).json({
+        error: "Validation failed",
+        details: error.issues
+      });
+      return;
+    }
+
     res.status(401).json({
       error: error.message
     });
@@ -35,16 +64,10 @@ export const login: RequestHandler = async (req, res) => {
 };
 
 export const refresh: RequestHandler = async (req, res) => {
-  const { refreshToken } = req.body as { refreshToken?: string };
-
-  if (!refreshToken) {
-    res.status(400).json({
-      error: "Refresh token required"
-    });
-    return;
-  }
-
   try {
+    const data = refreshTokenSchema.parse(req.body);
+    const { refreshToken } = data;
+
     const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET) as {
       userId: string;
     };
@@ -90,27 +113,37 @@ export const refresh: RequestHandler = async (req, res) => {
     res.json({
       accessToken: newAccessToken
     });
-  } catch {
+  } catch (error: any) {
+    if (error.name === "ZodError") {
+      res.status(400).json({
+        error: "Validation failed",
+        details: error.issues
+      });
+      return;
+    }
+
     res.status(403).json({
       error: "Invalid refresh token"
     });
   }
 };
+
 export const logout: RequestHandler = async (req, res) => {
   try {
-    const { refreshToken } = req.body as { refreshToken?: string };
+    const data = logoutSchema.parse(req.body);
 
-    if (!refreshToken) {
+    const result = await AuthService.logout(data.refreshToken);
+
+    res.json(result);
+  } catch (error: any) {
+    if (error.name === "ZodError") {
       res.status(400).json({
-        error: "Refresh token required"
+        error: "Validation failed",
+        details: error.issues
       });
       return;
     }
 
-    const result = await AuthService.logout(refreshToken);
-
-    res.json(result);
-  } catch (error: any) {
     res.status(400).json({
       error: error.message
     });
