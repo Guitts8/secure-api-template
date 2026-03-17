@@ -1,6 +1,7 @@
 import { prisma } from "../config/prisma";
 import { hashPassword, comparePassword } from "../utils/hash";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
+import { AppError } from "../utils/app-error";
 
 export async function register(name: string, email: string, password: string) {
   const userExists = await prisma.user.findUnique({
@@ -8,7 +9,7 @@ export async function register(name: string, email: string, password: string) {
   });
 
   if (userExists) {
-    throw new Error("User already exists");
+    throw new AppError("User already exists", 409);
   }
 
   const passwordHash = await hashPassword(password);
@@ -36,13 +37,13 @@ export async function login(email: string, password: string) {
   });
 
   if (!user) {
-    throw new Error("Invalid credentials");
+    throw new AppError("Invalid credentials", 401);
   }
 
   const passwordValid = await comparePassword(password, user.passwordHash);
 
   if (!passwordValid) {
-    throw new Error("Invalid credentials");
+    throw new AppError("Invalid credentials", 401);
   }
 
   const accessToken = generateAccessToken(user.id, user.role);
@@ -70,17 +71,18 @@ export async function login(email: string, password: string) {
     }
   };
 }
+
 export async function logout(refreshToken: string) {
   const storedToken = await prisma.refreshToken.findUnique({
     where: { token: refreshToken }
   });
 
   if (!storedToken) {
-    throw new Error("Refresh token not found");
+    throw new AppError("Refresh token not found", 404);
   }
 
   if (storedToken.revokedAt) {
-    throw new Error("Refresh token already revoked");
+    throw new AppError("Refresh token already revoked", 400);
   }
 
   await prisma.refreshToken.update({
