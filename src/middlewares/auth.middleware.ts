@@ -18,25 +18,28 @@ export function authenticate(
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
-    return res.status(401).json({
+    res.status(401).json({
       error: "Token not provided"
     });
+    return;
   }
 
   const parts = authHeader.split(" ");
 
   if (parts.length !== 2) {
-    return res.status(401).json({
+    res.status(401).json({
       error: "Invalid authorization header format"
     });
+    return;
   }
 
   const [scheme, token] = parts;
 
   if (scheme !== "Bearer") {
-    return res.status(401).json({
+    res.status(401).json({
       error: "Invalid authorization scheme"
     });
+    return;
   }
 
   try {
@@ -48,7 +51,7 @@ export function authenticate(
     req.user = decoded;
     next();
   } catch {
-    return res.status(401).json({
+    res.status(401).json({
       error: "Invalid or expired token"
     });
   }

@@ -18,15 +18,11 @@ const options: swaggerJsdoc.Options = {
         bearerAuth: {
           type: "http",
           scheme: "bearer",
-          bearerFormat: "JWT"
+          bearerFormat: "JWT",
+          description: "Enter your JWT token"
         }
       }
-    },
-    security: [
-      {
-        bearerAuth: []
-      }
-    ]
+    }
   },
   apis: ["./src/routes/*.ts"]
 };
