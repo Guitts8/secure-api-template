@@ -41,9 +41,15 @@ export const refresh = asyncHandler(async (req, res) => {
   const data = refreshTokenSchema.parse(req.body);
   const { refreshToken } = data;
 
-  const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET) as {
-    userId: string;
-  };
+  let decoded: { userId: string };
+
+  try {
+    decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET) as {
+      userId: string;
+    };
+  } catch {
+    throw new AppError("Invalid refresh token", 403);
+  }
 
   const storedToken = await prisma.refreshToken.findUnique({
     where: { token: refreshToken }
