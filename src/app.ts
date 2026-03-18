@@ -23,5 +23,6 @@ app.get("/", (_req, res) => {
     message: "Secure API Template running"
   });
 });
+import { errorHandler } from "./middlewares/error.middleware";
 
 export default app;
