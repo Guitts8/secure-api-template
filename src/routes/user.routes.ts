@@ -1,5 +1,7 @@
-import { Router, Response } from "express";
-import { authenticate, AuthenticatedRequest } from "../middlewares/auth.middleware";
+// src/routes/user.routes.ts
+import { Router } from "express";
+import { authenticate } from "../middlewares/auth.middleware";
+import * as UserController from "../controllers/user.controller";
 
 const router = Router();
 
@@ -7,21 +9,18 @@ const router = Router();
  * @swagger
  * /users/me:
  *   get:
- *     summary: Get authenticated user data from token
+ *     summary: Get current authenticated user
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Authenticated user returned successfully
+ *         description: Current user returned successfully
  *       401:
  *         description: Unauthorized
+ *       404:
+ *         description: User not found
  */
-router.get("/me", authenticate, (req: AuthenticatedRequest, res: Response) => {
-  return res.json({
-    message: "Authenticated user",
-    user: req.user
-  });
-});
+router.get("/me", authenticate, UserController.me);
 
 export default router;
